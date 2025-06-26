@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours Interactif : Marketing & UX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Background: slate-50, Text: slate-800, Accent: teal-600) -->
+    <!-- Application Structure Plan: A tab-based SPA with four main sections (Introduction, Marketing, Heuristiques, Évaluation UX) for non-linear learning. Key interactions include clickable cards for heuristics and a dynamic, chart-supported exploration of the HEART framework. This structure enhances engagement and user control over a linear text document, making learning more active. -->
+    <!-- Visualization & Content Choices: Marketing -> Visual diagram with HTML/CSS. Heuristiques -> Interactive JS cards revealing details on click. Évaluation UX -> Side-by-side comparison for methods and a fully interactive HEART framework section. HEART -> Clickable letters trigger dynamic text updates and corresponding Chart.js visualizations (donut, bar, line charts) to make abstract metrics concrete and understandable. Library: Chart.js. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .nav-button { transition: all 0.3s ease; }
+        .nav-button.active { background-color: #0d9488; color: white; }
+        .nav-button:not(.active):hover { background-color: #f0fdfa; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .heuristic-card { perspective: 1000px; }
+        .heuristic-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .heuristic-card.is-flipped .heuristic-card-inner { transform: rotateY(180deg); }
+        .heuristic-card-front, .heuristic-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1rem; border-radius: 0.75rem; }
+        .heuristic-card-back { transform: rotateY(180deg); }
+        .heart-letter { transition: all 0.2s ease-in-out; cursor: pointer; }
+        .heart-letter.active { transform: scale(1.1); background-color: #0d9488; color: white; }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 300px; max-height: 40vh; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-bold text-teal-700">Votre Cours Interactif</h1>
+            <p class="mt-2 text-lg text-slate-600">Marketing, Usabilité et Expérience Utilisateur</p>
+        </header>
+
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 sticky top-0 bg-slate-50/80 backdrop-blur-sm py-4 z-10">
+            <button data-target="intro" class="nav-button active font-semibold py-2 px-4 rounded-full border border-slate-300">Introduction</button>
+            <button data-target="marketing" class="nav-button font-semibold py-2 px-4 rounded-full border border-slate-300">Marketing</button>
+            <button data-target="heuristiques" class="nav-button font-semibold py-2 px-4 rounded-full border border-slate-300">Critères Heuristiques</button>
+            <button data-target="evaluation" class="nav-button font-semibold py-2 px-4 rounded-full border border-slate-300">Évaluation UX</button>
+        </nav>
+
+        <main>
+            <!-- Section Introduction -->
+            <section id="intro" class="content-section active p-4 md:p-8 bg-white rounded-xl shadow-md">
+                <h2 class="text-2xl md:text-3xl font-bold text-teal-700 mb-4">Bienvenue !</h2>
+                <p class="text-slate-600 leading-relaxed mb-4">
+                    Ce mini-cours interactif est conçu pour vous donner une compréhension rapide et claire des concepts essentiels du marketing digital, de l'utilisabilité d'un site web, et de l'évaluation de l'expérience utilisateur (UX). Naviguez à travers les sections pour explorer chaque sujet.
+                </p>
+                <div class="mt-6 p-4 bg-teal-50 border-l-4 border-teal-500 rounded-r-lg">
+                    <p class="font-semibold text-teal-800">Comment ça marche ?</p>
+                    <p class="text-teal-700">Cliquez sur les boutons de navigation ci-dessus pour changer de section. Dans chaque section, interagissez avec les éléments pour afficher plus d'informations. L'apprentissage se fait par la découverte !</p>
+                </div>
+
+                <div class="mt-8 p-4 bg-slate-100 rounded-xl shadow-sm">
+                    <h3 class="text-xl font-bold text-teal-700 mb-4">La Science de l'Optimisation : Hypothèses, KPI et Tests A/B</h3>
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        Pour améliorer un site web ou une campagne marketing, on ne se fie pas seulement à l'intuition. On utilise une approche scientifique :
+                    </p>
+                    <ul class="list-disc list-inside text-slate-600 mb-4 space-y-2">
+                        <li>
+                            <span class="font-semibold text-teal-800">Hypothèses :</span> Ce sont des suppositions éclairées sur ce qui pourrait améliorer l'expérience. Par exemple : "Si on change la couleur du bouton d'achat en vert, plus de gens cliqueront." C'est une idée que l'on va tester.
+                        </li>
+                        <li>
+                            <span class="font-semibold text-teal-800">KPI (Key Performance Indicators - Indicateurs Clés de Performance) :</span> Ce sont les mesures spécifiques que l'on va surveiller pour savoir si une hypothèse est vraie ou non. Pour notre bouton vert, un KPI serait le "taux de clic sur le bouton d'achat". Il doit être mesurable et lié à nos objectifs.
+                        </li>
+                        <li>
+                            <span class="font-semibold text-teal-800">Test A/B :</span> C'est une expérience où l'on compare deux versions (A et B) d'une même chose pour voir laquelle est la plus efficace. On montre la version A à une partie des utilisateurs et la version B à une autre partie, puis on compare les KPI. C'est comme comparer deux recettes de gâteau pour voir laquelle est la préférée, en gardant la meilleure !
+                        </li>
+                    </ul>
+                    <p class="text-slate-600 leading-relaxed">
+                        Ces trois éléments sont cruciaux pour prendre des décisions basées sur des données réelles et améliorer constamment l'efficacité d'un produit ou d'un service digital.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section Marketing -->
+            <section id="marketing" class="content-section p-4 md:p-8 bg-white rounded-xl shadow-md">
+                <h2 class="text-2xl md:text-3xl font-bold text-teal-700 mb-2">1. Le Marketing : Pourquoi c'est Indispensable ?</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">Le marketing n'est pas juste de la publicité. C'est un ensemble d'actions visant à connecter une entreprise à ses clients en leur offrant de la valeur. Explorez les 6 piliers du marketing ci-dessous.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-slate-100 rounded-lg">
+                        <h3 class="font-bold text-teal-800">Comprendre les besoins</h3>
+                        <p class="text-sm text-slate-600">Savoir ce que veulent les clients.</p>
+                    </div>
+                    <div class="p-4 bg-slate-100 rounded-lg">
+                        <h3 class="font-bold text-teal-800">Créer le bon produit</h3>
+                        <p class="text-sm text-slate-600">Répondre à ces besoins.</p>
+                    </div>
+                    <div class="p-4 bg-slate-100 rounded-lg">
+                        <h3 class="font-bold text-teal-800">Fixer le juste prix</h3>
+                        <p class="text-sm text-slate-600">Satisfaire client et entreprise.</p>
+                    </div>
+                    <div class="p-4 bg-slate-100 rounded-lg">
+                        <h3 class="font-bold text-teal-800">Faire connaître</h3>
+                        <p class="text-sm text-slate-600">Promouvoir le produit/service.</p>
+                    </div>
+                    <div class="p-4 bg-slate-100 rounded-lg">
+                        <h3 class="font-bold text-teal-800">Le rendre disponible</h3>
+                        <p class="text-sm text-slate-600">Où et quand le client le veut.</p>
+                    </div>
+                    <div class="p-4 bg-slate-100 rounded-lg">
+                        <h3 class="font-bold text-teal-800">Fidéliser</h3>
+                        <p class="text-sm text-slate-600">Garder les clients satisfaits.</p>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg">
+                    <p class="font-semibold text-amber-800">Analogie : La Boulangerie</p>
+                    <p class="text-amber-700">Imaginez une excellente boulangerie cachée. Sans marketing, personne ne la trouverait. Le marketing, c'est le panneau, l'odeur du pain frais qui attire, et la carte de fidélité qui vous fait revenir.</p>
+                </div>
+            </section>
+
+            <!-- Section Heuristiques -->
+            <section id="heuristiques" class="content-section p-4 md:p-8 bg-white rounded-xl shadow-md">
+                <h2 class="text-2xl md:text-3xl font-bold text-teal-700 mb-2">2. Critères Heuristiques : Les Règles d'Or</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">Les heuristiques sont des "bonnes pratiques" pour créer un site facile et agréable à utiliser. Cliquez sur chaque carte pour la retourner et découvrir sa signification.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Carte 1 -->
+                    <div class="heuristic-card h-48">
+                        <div class="heuristic-card-inner shadow-md rounded-xl">
+                            <div class="heuristic-card-front bg-teal-500 text-white">
+                                <h3 class="text-xl font-bold">Visibilité du statut</h3>
+                                <p class="mt-2 text-sm">(Cliquez pour en savoir plus)</p>
+                            </div>
+                            <div class="heuristic-card-back bg-white border-2 border-teal-500 text-slate-700 text-center">
+                                <p class="font-semibold">L'utilisateur sait toujours ce qu'il se passe.</p>
+                                <p class="text-sm mt-2">Ex: Une barre de chargement.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carte 2 -->
+                    <div class="heuristic-card h-48">
+                        <div class="heuristic-card-inner shadow-md rounded-xl">
+                            <div class="heuristic-card-front bg-teal-500 text-white">
+                                <h3 class="text-xl font-bold">Adéquation avec le monde réel</h3>
+                            </div>
+                            <div class="heuristic-card-back bg-white border-2 border-teal-500 text-slate-700 text-center">
+                                <p class="font-semibold">Le site parle le langage de l'utilisateur.</p>
+                                <p class="text-sm mt-2">Ex: Une icône de panier pour le panier.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carte 3 -->
+                    <div class="heuristic-card h-48">
+                        <div class="heuristic-card-inner shadow-md rounded-xl">
+                            <div class="heuristic-card-front bg-teal-500 text-white">
+                                <h3 class="text-xl font-bold">Contrôle et liberté</h3>
+                            </div>
+                            <div class="heuristic-card-back bg-white border-2 border-teal-500 text-slate-700 text-center">
+                                <p class="font-semibold">L'utilisateur peut facilement revenir en arrière.</p>
+                                <p class="text-sm mt-2">Ex: Un bouton "Annuler".</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carte 4 -->
+                    <div class="heuristic-card h-48">
+                        <div class="heuristic-card-inner shadow-md rounded-xl">
+                            <div class="heuristic-card-front bg-teal-500 text-white">
+                                <h3 class="text-xl font-bold">Cohérence et standards</h3>
+                            </div>
+                            <div class="heuristic-card-back bg-white border-2 border-teal-500 text-slate-700 text-center">
+                                <p class="font-semibold">Le site est logique et prévisible.</p>
+                                <p class="text-sm mt-2">Ex: Le menu est toujours au même endroit.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carte 5 -->
+                    <div class="heuristic-card h-48">
+                        <div class="heuristic-card-inner shadow-md rounded-xl">
+                            <div class="heuristic-card-front bg-teal-500 text-white">
+                                <h3 class="text-xl font-bold">Reconnaissance plutôt que rappel</h3>
+                            </div>
+                            <div class="heuristic-card-back bg-white border-2 border-teal-500 text-slate-700 text-center">
+                                <p class="font-semibold">Le site aide l'utilisateur à se souvenir.</p>
+                                <p class="text-sm mt-2">Ex: Des menus clairs et visibles.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg">
+                    <p class="font-semibold text-amber-800">Analogie : Le Tableau de Bord</p>
+                    <p class="text-amber-700">Pensez au tableau de bord d'une voiture. Tout est standardisé et facile à reconnaître : le volant, les pédales, les indicateurs. Vous n'avez pas besoin de réapprendre à chaque fois.</p>
+                </div>
+            </section>
+
+            <!-- Section Evaluation UX -->
+            <section id="evaluation" class="content-section p-4 md:p-8 bg-white rounded-xl shadow-md">
+                <h2 class="text-2xl md:text-3xl font-bold text-teal-700 mb-2">3. Évaluer l'Expérience Utilisateur (UX)</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">Pour savoir si un site est efficace, on évalue l'expérience utilisateur. On combine deux approches : qualitative et quantitative. Pour structurer l'analyse, on utilise souvent le framework HEART.</p>
+                
+                <h3 class="text-xl font-bold text-slate-700 mt-8 mb-4">Qualitatif vs. Quantitatif</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <h4 class="font-bold text-blue-800">Qualitatif : Comprendre le "Pourquoi"</h4>
+                        <p class="text-blue-700 mt-2">Permet de comprendre les sentiments et motivations.</p>
+                        <ul class="list-disc list-inside mt-2 text-sm text-blue-600">
+                            <li>Tests Utilisateurs</li>
+                            <li>Sondages & Interviews</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-lg">
+                        <h4 class="font-bold text-purple-800">Quantitatif : Mesurer le "Combien"</h4>
+                        <p class="text-purple-700 mt-2">Collecte des chiffres sur les comportements.</p>
+                        <ul class="list-disc list-inside mt-2 text-sm text-purple-600">
+                            <li>Nombre de visiteurs, pages vues</li>
+                            <li>Taux de rebond, taux de conversion</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-slate-700 mt-8 mb-4">Le Framework HEART en Action</h3>
+                <p class="text-slate-600 leading-relaxed mb-6">Le framework HEART de Google est un excellent outil d'audit. Cliquez sur chaque lettre pour voir sa signification et un exemple de visualisation.</p>
+                <div class="lg:flex lg:gap-8 items-start">
+                    <div class="flex-none mb-6 lg:mb-0">
+                        <div id="heart-nav" class="flex justify-center gap-2 p-2 bg-slate-100 rounded-full">
+                            <span data-heart="H" class="heart-letter active w-12 h-12 flex items-center justify-center font-bold text-2xl rounded-full bg-slate-200">H</span>
+                            <span data-heart="E" class="heart-letter w-12 h-12 flex items-center justify-center font-bold text-2xl rounded-full bg-slate-200">E</span>
+                            <span data-heart="A" class="heart-letter w-12 h-12 flex items-center justify-center font-bold text-2xl rounded-full bg-slate-200">A</span>
+                            <span data-heart="R" class="heart-letter w-12 h-12 flex items-center justify-center font-bold text-2xl rounded-full bg-slate-200">R</span>
+                            <span data-heart="T" class="heart-letter w-12 h-12 flex items-center justify-center font-bold text-2xl rounded-full bg-slate-200">T</span>
+                        </div>
+                    </div>
+                    <div class="flex-grow grid md:grid-cols-2 gap-6 items-center">
+                        <div id="heart-content">
+                            <h4 id="heart-title" class="text-2xl font-bold text-teal-700"></h4>
+                            <p id="heart-desc" class="mt-2 text-slate-600"></p>
+                            <div class="mt-4">
+                                <p class="font-semibold text-slate-700">Comment mesurer :</p>
+                                <p id="heart-metrics" class="text-sm text-slate-500"></p>
+                            </div>
+                             <div class="mt-4 p-3 bg-teal-50 border-l-4 border-teal-500 rounded-r-lg">
+                                <p class="font-semibold text-teal-800">Question pour l'audit :</p>
+                                <p id="heart-audit" class="text-sm text-teal-700"></p>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="heartChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function switchTab(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    }
+                });
+
+                navButtons.forEach(button => {
+                    button.classList.remove('active');
+                    if (button.dataset.target === targetId) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchTab(button.dataset.target);
+                });
+            });
+
+            const heuristicCards = document.querySelectorAll('.heuristic-card');
+            heuristicCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('is-flipped');
+                });
+            });
+            
+            const heartNav = document.getElementById('heart-nav');
+            const heartLetters = document.querySelectorAll('.heart-letter');
+            const heartTitle = document.getElementById('heart-title');
+            const heartDesc = document.getElementById('heart-desc');
+            const heartMetrics = document.getElementById('heart-metrics');
+            const heartAudit = document.getElementById('heart-audit');
+            const chartCanvas = document.getElementById('heartChart');
+            let heartChart;
+            
+            const heartData = {
+                H: {
+                    title: 'Happiness (Satisfaction)',
+                    desc: 'La satisfaction globale des utilisateurs. Aiment-ils utiliser le site ?',
+                    metrics: 'Sondages de satisfaction, notes et avis, Net Promoter Score (NPS).',
+                    audit: 'Les utilisateurs semblent-ils contents ? Y a-t-il des éléments frustrants ou ravissants ?',
+                    chart: {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Satisfaits', 'Neutres', 'Insatisfaits'],
+                            datasets: [{ label: 'Satisfaction', data: [75, 18, 7], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], hoverOffset: 4 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } }
+                    }
+                },
+                E: {
+                    title: 'Engagement',
+                    desc: 'Le niveau d\'interaction des utilisateurs avec le site. Passent-ils du temps dessus ?',
+                    metrics: 'Temps passé, pages vues par session, fréquence des visites, nombre d\'interactions.',
+                    audit: 'Le site donne-t-il envie de rester et d\'explorer ? Y a-t-il du contenu captivant ?',
+                    chart: {
+                        type: 'bar',
+                        data: {
+                            labels: ['Visiteurs Occasionnels', 'Utilisateurs Réguliers', 'Super Fans'],
+                            datasets: [{ label: 'Visites par semaine', data: [1.2, 3.5, 7.1], backgroundColor: ['#60a5fa', '#818cf8', '#a78bfa'] }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } }
+                    }
+                },
+                A: {
+                    title: 'Adoption',
+                    desc: 'La facilité avec laquelle les nouveaux utilisateurs commencent à utiliser le site et ses fonctionnalités clés.',
+                    metrics: 'Nombre de nouvelles inscriptions, taux de complétion du parcours d\'intégration.',
+                    audit: 'Est-ce facile de commencer à utiliser le site pour la première fois ? L\'inscription est-elle simple ?',
+                    chart: {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+                            datasets: [{ label: 'Nouveaux Utilisateurs', data: [120, 150, 210, 200, 280, 350], fill: true, borderColor: '#22c55e', tension: 0.1 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                    }
+                },
+                R: {
+                    title: 'Retention (Rétention)',
+                    desc: 'La capacité du site à faire revenir les utilisateurs au fil du temps.',
+                    metrics: 'Taux de retour des utilisateurs, fréquence des visites répétées, taux de désabonnement.',
+                    audit: 'Qu\'est-ce qui donnerait envie aux utilisateurs de revenir régulièrement ?',
+                    chart: {
+                        type: 'bar',
+                        data: {
+                            labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'],
+                            datasets: [{ label: 'Utilisateurs revenus', data: [100, 85, 72, 65], backgroundColor: '#fbbf24'}]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, suggestedMax: 100 } } }
+                    }
+                },
+                T: {
+                    title: 'Task Success (Accomplissement)',
+                    desc: 'L\'efficacité avec laquelle les utilisateurs peuvent accomplir leurs objectifs principaux.',
+                    metrics: 'Taux de complétion des tâches, temps pour accomplir une tâche, taux d\'erreur.',
+                    audit: 'Les utilisateurs peuvent-ils atteindre leurs objectifs facilement et rapidement ? Y a-t-il des blocages ?',
+                     chart: {
+                        type: 'bar',
+                        data: {
+                            labels: ['Recherche Produit', 'Ajout Panier', 'Paiement'],
+                            datasets: [{ label: 'Taux de succès (%)', data: [95, 88, 82], backgroundColor: ['#34d399', '#fb923c', '#f87171'] }]
+                        },
+                        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, suggestedMax: 100 } } }
+                    }
+                }
+            };
+
+            function updateHeartDisplay(metric) {
+                const data = heartData[metric];
+                heartTitle.textContent = data.title;
+                heartDesc.textContent = data.desc;
+                heartMetrics.textContent = data.metrics;
+                heartAudit.textContent = data.audit;
+
+                heartLetters.forEach(letter => {
+                    letter.classList.remove('active');
+                    if (letter.dataset.heart === metric) {
+                        letter.classList.add('active');
+                    }
+                });
+                
+                if (heartChart) {
+                    heartChart.destroy();
+                }
+                heartChart = new Chart(chartCanvas, data.chart);
+            }
+
+            heartNav.addEventListener('click', (e) => {
+                if(e.target.matches('.heart-letter')) {
+                    const metric = e.target.dataset.heart;
+                    updateHeartDisplay(metric);
+                }
+            });
+
+            // Initial state
+            switchTab('intro');
+            updateHeartDisplay('H');
+        });
+    </script>
+
+</body>
+</html> 
